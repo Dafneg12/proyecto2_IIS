@@ -11,7 +11,7 @@ namespace proyecto2
 {
 
 
-    public partial class WebForm1
+    public partial class clientes
     {
 
         /// <summary>

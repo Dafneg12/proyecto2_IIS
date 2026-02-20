@@ -3,57 +3,153 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>Menú Principal</title>
-    <style>
-        body {
-            font-family: Arial;
-            background-color: #f4f6f9;
-        }
+    <title>Registro de Órdenes</title>
 
-        .contenedor {
-            width: 600px;
-            margin: 100px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
-        }
-
-        h1 {
-            margin-bottom: 25px;
-        }
-
-        .btn {
-            width: 80%;
-            padding: 15px;
-            margin: 10px;
-            font-size: 18px;
-            border-radius: 8px;
-            border: none;
-            background: #007bff;
-            color: white;
-            cursor: pointer;
-        }
-
-        .btn:hover {
-            background: #0056b3;
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
-<body>
-    <form id="form1" runat="server">
-        <div class="contenedor">
-            <h1>Taller Mecánico</h1>
-            <h3>Menú Principal</h3>
+<body class="bg-light">
 
+<form id="form1" runat="server">
 
-            <asp:Button CssClass="btn" ID="btnOrden" runat="server"
-                Text="Registrar Orden de Servicio" OnClick="btnOrden_Click" />
+<div class="container mt-4">
 
-            <asp:Button CssClass="btn" ID="btnReportes" runat="server"
-                Text="Reportes" OnClick="btnReportes_Click" />
+    <!-- ENCABEZADO -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body text-white rounded" style="background:#A26493;">
+            <h3 class="mb-0 text-center">Registro de Órdenes de Servicio</h3>
         </div>
-    </form>
+    </div>
+
+    <!-- DATOS GENERALES -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header fw-bold text-white" style="background:#38686E;">
+            Datos Generales
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+
+                <div class="col-md-3">
+                    <label>Fecha</label>
+                    <asp:TextBox ID="txtFecha" runat="server" CssClass="form-control" ReadOnly="true"/>
+                </div>
+
+                <div class="col-md-3">
+                    <label>Folio</label>
+                    <asp:TextBox ID="txtFolio" runat="server" CssClass="form-control" ReadOnly="true"/>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Cliente</label>
+                    <div class="input-group">
+                        <asp:TextBox ID="txtCliente" runat="server" CssClass="form-control" ReadOnly="true"/>
+                        <asp:Button ID="btnBuscarCliente" runat="server"
+                            Text="Buscar"
+                            CssClass="btn text-white"
+                            Style="background:#A26493;"
+                            OnClick="btnBuscarCliente_Click"/>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label>RFC</label>
+                    <asp:TextBox ID="txtRFC" runat="server" CssClass="form-control" ReadOnly="true"/>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Vehículo</label>
+                    <asp:DropDownList ID="ddlVehiculos" runat="server"
+                        CssClass="form-select"
+                        AutoPostBack="true"
+                        OnSelectedIndexChanged="ddlVehiculos_SelectedIndexChanged" />
+                </div>
+
+                <div class="col-md-6">
+                    <label>Descripción del vehículo</label>
+                    <asp:TextBox ID="txtVehiculoDesc" runat="server"
+                        CssClass="form-control"
+                        ReadOnly="true"/>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- AGREGAR SERVICIOS -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header fw-bold text-white" style="background:#38686E;">
+            Servicios
+        </div>
+
+        <div class="card-body">
+
+            <div class="row g-3 align-items-end">
+
+                <div class="col-md-6">
+                    <label>Servicio</label>
+                    <asp:DropDownList ID="ddlServicios" runat="server" CssClass="form-select"/>
+                </div>
+
+                <div class="col-md-3">
+                    <label>Cantidad</label>
+                    <asp:TextBox ID="txtCantidad" runat="server" CssClass="form-control"/>
+                </div>
+
+                <div class="col-md-3 d-grid">
+                    <asp:Button ID="btnAgregar" runat="server"
+                        Text="Agregar"
+                        CssClass="btn text-white"
+                        Style="background:#966A88;"
+                        OnClick="btnAgregar_Click"/>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- TABLA DE DETALLE -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header fw-bold text-white" style="background:#38686E;">
+            Detalle de Servicios
+        </div>
+
+        <div class="card-body">
+
+            <asp:GridView ID="gvDetalle" runat="server"
+                CssClass="table table-bordered table-hover text-center"
+                AutoGenerateColumns="false">
+                <Columns>
+                    <asp:BoundField DataField="Servicio" HeaderText="Servicio" />
+                    <asp:BoundField DataField="Cantidad" HeaderText="Cantidad" />
+                    <asp:BoundField DataField="Precio" HeaderText="Precio" DataFormatString="{0:C}" />
+                    <asp:BoundField DataField="Subtotal" HeaderText="Subtotal" DataFormatString="{0:C}" />
+                </Columns>
+            </asp:GridView>
+
+            <div class="row justify-content-end mt-3">
+                <div class="col-md-4">
+                    <label class="fw-bold">Total</label>
+                    <asp:TextBox ID="txtTotal" runat="server"
+                        CssClass="form-control form-control-lg text-end fw-bold"
+                        ReadOnly="true"/>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- BOTON GUARDAR -->
+    <div class="text-center mb-5">
+        <asp:Button ID="btnGuardar" runat="server"
+            Text="Guardar Orden"
+            CssClass="btn btn-lg text-white px-5"
+            Style="background:#966A88;"
+            OnClick="btnGuardar_Click"/>
+    </div>
+
+</div>
+
+</form>
+
 </body>
 </html>

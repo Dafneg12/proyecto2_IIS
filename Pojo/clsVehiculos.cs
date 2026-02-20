@@ -20,5 +20,6 @@ namespace proyecto2.Pojo
         public float kilometraje { get; set; }
         public string tipo { get; set; }
         public int antiguedad { get; set; }
+        public int claveCliente { get; set; }
     }
 }
