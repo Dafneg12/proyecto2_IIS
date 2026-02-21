@@ -1,4 +1,5 @@
-﻿using System;
+﻿using proyecto2.Backend;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -22,19 +23,12 @@ namespace proyecto2
 
         void CargarClientes()
         {
-            using (SqlConnection cn = new SqlConnection(
-                ConfigurationManager.ConnectionStrings["cn"].ConnectionString))
-            {
-                SqlDataAdapter da = new SqlDataAdapter(
-                "SELECT claveCliente, rfc, nombre + ' ' + apellidoPaterno + ' ' + apellidoMaterno AS nombreCompleto FROM clientes",
-                cn);
+            clsConsultasClientes consultas = new clsConsultasClientes();
+            DataTable dt = consultas.cargarClientes();
 
-                DataTable dt = new DataTable();
-                da.Fill(dt);
+            gvClientes.DataSource = dt;
+            gvClientes.DataBind();
 
-                gvClientes.DataSource = dt;
-                gvClientes.DataBind();
-            }
         }
 
         protected void gvClientes_SelectedIndexChanged(object sender, EventArgs e)

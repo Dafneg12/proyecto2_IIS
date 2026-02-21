@@ -10,6 +10,20 @@ namespace proyecto2.Backend
 {
     public class clsConsultasClientes
     {
+
+        public DataTable cargarClientes()
+        {
+            using (SqlConnection cn = new SqlConnection(
+                ConfigurationManager.ConnectionStrings["cn"].ConnectionString))
+            {
+                SqlDataAdapter da = new SqlDataAdapter("SELECT claveCliente, rfc, nombre + ' ' + apellidoPaterno + ' ' + apellidoMaterno AS nombreCompleto FROM clientes",
+                cn);
+
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+                return dt;
+            }
+        }
         public DataTable cargarVehiculosCliente(int id)
         {
             using (SqlConnection cn = new SqlConnection(

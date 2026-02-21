@@ -224,6 +224,7 @@
     <Compile Include="Backend\clsConsultasClientes.cs" />
     <Compile Include="Backend\clsConsultasRegistroOrden.cs" />
     <Compile Include="Backend\clsConsultasServicios.cs" />
+    <Compile Include="Backend\session.cs" />
     <Compile Include="clientes.aspx.cs">
       <DependentUpon>clientes.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

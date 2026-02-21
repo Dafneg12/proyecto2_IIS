@@ -1,5 +1,4 @@
 ﻿using proyecto2.Backend;
-using proyecto2.Pojo;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
