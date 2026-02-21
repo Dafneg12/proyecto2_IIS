@@ -1,4 +1,5 @@
-﻿using proyecto2.Pojo;
+﻿using proyecto2.Backend;
+using proyecto2.Pojo;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -37,22 +38,16 @@ namespace proyecto2
 
         void CargarServicios()
         {
-            using (SqlConnection cn = new SqlConnection(
-                ConfigurationManager.ConnectionStrings["cn"].ConnectionString))
-            {
-                SqlDataAdapter da = new SqlDataAdapter(
-                    "SELECT claveServicio, nombreServicio, costoBase FROM servicios", cn);
+            DataTable dt = new DataTable();
+            clsConsultasServicios cons = new clsConsultasServicios();
+            dt = cons.cargarServicios();
 
-                DataTable dt = new DataTable();
-                da.Fill(dt);
+            ddlServicios.DataSource = dt;
+            ddlServicios.DataTextField = "nombreServicio";
+            ddlServicios.DataValueField = "claveServicio";
+            ddlServicios.DataBind();
 
-                ddlServicios.DataSource = dt;
-                ddlServicios.DataTextField = "nombreServicio";
-                ddlServicios.DataValueField = "claveServicio";
-                ddlServicios.DataBind();
-
-                ddlServicios.Items.Insert(0, new ListItem("--Seleccione--", "0"));
-            }
+            ddlServicios.Items.Insert(0, new ListItem("--Seleccione--", "0"));
         }
 
         protected void btnAgregar_Click(object sender, EventArgs e)
@@ -90,21 +85,8 @@ namespace proyecto2
 
         decimal ObtenerPrecioServicio(int id)
         {
-            using (SqlConnection cn = new SqlConnection(
-                ConfigurationManager.ConnectionStrings["cn"].ConnectionString)) 
-            {
-
-                SqlCommand cmd = new SqlCommand(
-                    "SELECT costoBase FROM servicios WHERE claveServicio=@id", cn);
-
-                cmd.Parameters.AddWithValue("@id", id);
-
-                cn.Open();
-                decimal precio = Convert.ToDecimal(cmd.ExecuteScalar());
-                cn.Close();
-
-                return precio;
-            }
+            clsConsultasServicios cons = new clsConsultasServicios();
+            return cons.ObtenerPrecioServicio(id);
         }
 
         int ObtenerSiguienteFolio()
