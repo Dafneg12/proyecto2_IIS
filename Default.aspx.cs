@@ -91,45 +91,24 @@ namespace proyecto2
 
         int ObtenerSiguienteFolio()
         {
-            using (SqlConnection cn = new SqlConnection(
-                ConfigurationManager.ConnectionStrings["cn"].ConnectionString))
-            {
-                SqlCommand cmd = new SqlCommand(
-                    "SELECT ISNULL(MAX(folioOrden),0) + 1 FROM ordenesServicio", cn);
-
-                cn.Open();
-                int folio = Convert.ToInt32(cmd.ExecuteScalar());
-                cn.Close();
-
-                return folio;
-            }
+            clsConsultasRegistroOrden cons = new clsConsultasRegistroOrden();
+            return cons.ObtenerSiguienteFolio();
         }
 
         void CargarVehiculosCliente()
         {
             if (Session["claveCliente"] == null) return;
 
-            using (SqlConnection cn = new SqlConnection(
-                ConfigurationManager.ConnectionStrings["cn"].ConnectionString))
-            {
-                SqlDataAdapter da = new SqlDataAdapter(
-                    @"SELECT numeroSerie,
-                     placas + ' - ' + marca + ' ' + modelo AS vehiculo
-              FROM vehiculos
-              WHERE claveCliente = @id", cn);
+            DataTable dt = new DataTable();
+            clsConsultasClientes cons = new clsConsultasClientes();
+            dt = cons.cargarVehiculosCliente(Convert.ToInt32(Session["claveCliente"]));
 
-                da.SelectCommand.Parameters.AddWithValue("@id", Session["claveCliente"]);
+            ddlVehiculos.DataSource = dt;
+            ddlVehiculos.DataTextField = "vehiculo";
+            ddlVehiculos.DataValueField = "numeroSerie";
+            ddlVehiculos.DataBind();
 
-                DataTable dt = new DataTable();
-                da.Fill(dt);
-
-                ddlVehiculos.DataSource = dt;
-                ddlVehiculos.DataTextField = "vehiculo";
-                ddlVehiculos.DataValueField = "numeroSerie";
-                ddlVehiculos.DataBind();
-
-                ddlVehiculos.Items.Insert(0, new ListItem("--Seleccione--", "0"));
-            }
+            ddlVehiculos.Items.Insert(0, new ListItem("--Seleccione--", "0"));
         }
 
         protected void ddlVehiculos_SelectedIndexChanged(object sender, EventArgs e)
@@ -140,22 +119,9 @@ namespace proyecto2
                 return;
             }
 
-            using (SqlConnection cn = new SqlConnection(
-                ConfigurationManager.ConnectionStrings["cn"].ConnectionString))
-            {
-                SqlCommand cmd = new SqlCommand(
-                    @"SELECT marca + ' ' + modelo + ' ' + color + 
-                     ' - Placas: ' + placas + 
-                     ' - Año: ' + CAST(anio AS varchar)
-              FROM vehiculos
-              WHERE numeroSerie = @id", cn);
+            clsConsultasClientes cons = new clsConsultasClientes();
 
-                cmd.Parameters.AddWithValue("@id", ddlVehiculos.SelectedValue);
-
-                cn.Open();
-                txtVehiculoDesc.Text = cmd.ExecuteScalar().ToString();
-                cn.Close();
-            }
+           txtVehiculoDesc.Text = cons.datosVehiculo(Convert.ToInt32(ddlVehiculos.SelectedValue)); ;
         }
 
         void CalcularTotal(DataTable dt)
@@ -180,55 +146,12 @@ namespace proyecto2
 
             DataTable dt = (DataTable)Session["detalle"];
 
-            using (SqlConnection cn = new SqlConnection(
-                ConfigurationManager.ConnectionStrings["cn"].ConnectionString))
-            {
-                cn.Open();
-                SqlTransaction tran = cn.BeginTransaction();
+            clsConsultasRegistroOrden cons = new clsConsultasRegistroOrden();
 
-                try
-                {
-                    // 1. Insertar ORDEN
-                    SqlCommand cmdOrden = new SqlCommand(
-                        @"INSERT INTO ordenesServicio
-                  (fechaIngreso, fechaEstimadaEntrega, fechaRealEntrega, estado, costoTotal, numeroSerie)
-                  VALUES (@fi, @fe, @fr, @estado, @total, @serie);
-                  SELECT SCOPE_IDENTITY();", cn, tran);
-
-                    cmdOrden.Parameters.AddWithValue("@fi", DateTime.Now);
-                    cmdOrden.Parameters.AddWithValue("@fe", DateTime.Now.AddDays(2));
-                    cmdOrden.Parameters.AddWithValue("@fr", DateTime.Now.AddDays(2));
-                    cmdOrden.Parameters.AddWithValue("@estado", "Abierta");
-                    cmdOrden.Parameters.AddWithValue("@total", Convert.ToDecimal(txtTotal.Text));
-                    cmdOrden.Parameters.AddWithValue("@serie", ddlVehiculos.SelectedValue);
-
-                    int folio = Convert.ToInt32(cmdOrden.ExecuteScalar());
-
-                    // 2. Insertar DETALLE
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        SqlCommand cmdServicio = new SqlCommand(
-                            @"INSERT INTO OrdenServicio (folioOrden, claveServicio)
-                      VALUES (@folio, 
-                      (SELECT claveServicio FROM servicios WHERE nombreServicio=@servicio))",
-                            cn, tran);
-
-                        cmdServicio.Parameters.AddWithValue("@folio", folio);
-                        cmdServicio.Parameters.AddWithValue("@servicio", row["Servicio"].ToString());
-
-                        cmdServicio.ExecuteNonQuery();
-                    }
-
-                    tran.Commit();
-
-                    Response.Write("<script>alert('Orden registrada correctamente');window.location='Default.aspx';</script>");
-                }
-                catch (Exception ex)
-                {
-                    tran.Rollback();
-                    Response.Write("<script>alert('Error al guardar: " + ex.Message + "');</script>");
-                }
-            }
+            string resultado = cons.RegistrarOrden(int.Parse(txtFolio.Text), Convert.ToInt32(Session["claveCliente"]), ddlVehiculos.SelectedValue, DateTime.Now, 
+                                Convert.ToDecimal(txtTotal.Text), dt);
+            
+            Response.Write(resultado);
         }
 
     }

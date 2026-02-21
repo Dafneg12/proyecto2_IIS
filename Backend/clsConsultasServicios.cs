@@ -16,7 +16,7 @@ namespace proyecto2.Backend
                 ConfigurationManager.ConnectionStrings["cn"].ConnectionString))
             {
                 SqlDataAdapter da = new SqlDataAdapter(
-                    "SELECT claveServicio, nombreServicio, costoBase FROM servicios", cn);
+                    "SELECT claveServicio, nombreServicio FROM servicios", cn);
 
                 DataTable dt = new DataTable();
                 da.Fill(dt);
