@@ -15,8 +15,7 @@ namespace proyecto2.Backend
             using (SqlConnection cn = new SqlConnection(
                 ConfigurationManager.ConnectionStrings["cn"].ConnectionString))
             {
-                SqlDataAdapter da = new SqlDataAdapter(
-                    "SELECT claveServicio, nombreServicio FROM servicios", cn);
+                SqlDataAdapter da = new SqlDataAdapter("SELECT claveServicio, nombreServicio FROM servicios", cn);
 
                 DataTable dt = new DataTable();
                 da.Fill(dt);
@@ -32,8 +31,7 @@ namespace proyecto2.Backend
                 ConfigurationManager.ConnectionStrings["cn"].ConnectionString))
             {
 
-                SqlCommand cmd = new SqlCommand(
-                    "SELECT costoBase FROM servicios WHERE claveServicio=@id", cn);
+                SqlCommand cmd = new SqlCommand("SELECT costoBase FROM servicios WHERE claveServicio=@id", cn);
 
                 cmd.Parameters.AddWithValue("@id", id);
 

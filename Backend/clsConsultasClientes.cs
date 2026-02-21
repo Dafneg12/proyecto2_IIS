@@ -29,11 +29,8 @@ namespace proyecto2.Backend
             using (SqlConnection cn = new SqlConnection(
                 ConfigurationManager.ConnectionStrings["cn"].ConnectionString))
             {
-                SqlDataAdapter da = new SqlDataAdapter(
-                    @"SELECT numeroSerie,
-                     placas + ' - ' + marca + ' ' + modelo AS vehiculo
-              FROM vehiculos
-              WHERE claveCliente = @id", cn);
+                SqlDataAdapter da = new SqlDataAdapter(@"SELECT numeroSerie, placas + ' - ' + marca + ' ' + modelo AS vehiculo
+                                                       FROM vehiculos WHERE claveCliente = @id", cn);
 
                 da.SelectCommand.Parameters.AddWithValue("@id", id);
 
@@ -49,12 +46,8 @@ namespace proyecto2.Backend
             using (SqlConnection cn = new SqlConnection(
                 ConfigurationManager.ConnectionStrings["cn"].ConnectionString))
             {
-                SqlCommand cmd = new SqlCommand(
-                    @"SELECT marca + ' ' + modelo + ' ' + color + 
-                     ' - Placas: ' + placas + 
-                     ' - Año: ' + CAST(anio AS varchar)
-              FROM vehiculos
-              WHERE numeroSerie = @id", cn);
+                SqlCommand cmd = new SqlCommand(@"SELECT marca + ' ' + modelo + ' ' + color + ' - Placas: ' + placas + ' - Año: ' + CAST(anio AS varchar)
+                                                FROM vehiculos WHERE numeroSerie = @id", cn);
 
                 cmd.Parameters.AddWithValue("@id", id);
 

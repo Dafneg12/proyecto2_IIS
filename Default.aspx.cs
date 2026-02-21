@@ -1,4 +1,5 @@
-﻿using proyecto2.Backend;
+﻿using Microsoft.IdentityModel.Tokens;
+using proyecto2.Backend;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -64,8 +65,19 @@ namespace proyecto2
             else
                 dt = (DataTable)Session["detalle"];
 
+            if (ddlServicios.SelectedValue == "0" || string.IsNullOrEmpty(txtCantidad.Text))
+            {
+                Response.Write("<script>alert('Debe seleccionar un servicio y especificar la cantidad');</script>");
+                return;
+            }
             string servicio = ddlServicios.SelectedItem.Text;
+
             int cantidad = int.Parse(txtCantidad.Text);
+            if (cantidad <= 0)
+            {
+                Response.Write("<script>alert('La cantidad debe ser un número entero positivo');</script>");
+                return;
+            }
 
             decimal precio = ObtenerPrecioServicio(
                 int.Parse(ddlServicios.SelectedValue));
@@ -137,7 +149,7 @@ namespace proyecto2
 
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
-            if (Session["detalle"] == null || ddlVehiculos.SelectedValue == "0")
+            if (Session["detalle"] == null || ddlVehiculos.SelectedValue == "0" || ddlServicios.SelectedValue == "0")
             {
                 Response.Write("<script>alert('Debe seleccionar cliente, vehículo y al menos un servicio');</script>");
                 return;
@@ -151,6 +163,7 @@ namespace proyecto2
                                 Convert.ToDecimal(txtTotal.Text), dt);
             
             Response.Write(resultado);
+            
         }
 
     }
