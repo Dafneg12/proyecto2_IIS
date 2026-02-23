@@ -24,12 +24,9 @@ namespace proyecto2.Backend
             using (SqlConnection cn = new SqlConnection(ConfigurationManager.ConnectionStrings["cn"].ConnectionString))
             {
                 cn.Open();
-                SqlCommand cmd = new SqlCommand("SELECT ISNULL(MAX(folioOrden),0) + 1 FROM ordenesServicio", cn);
-                cn.Close();
-
-                int folio = Convert.ToInt32(cmd.ExecuteScalar());
-
-                return folio;
+                string sql = "SELECT ISNULL(MAX(folio_orden), 0) + 1 FROM Ordenes_Servicio";
+                SqlCommand cmd = new SqlCommand(sql, cn);
+                return Convert.ToInt32(cmd.ExecuteScalar());
             }
         }
 
