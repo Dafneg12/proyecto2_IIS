@@ -21,12 +21,17 @@ namespace proyecto2.Backend
         /// </summary>
         public int ObtenerSiguienteFolio()
         {
-            using (SqlConnection cn = new SqlConnection(ConfigurationManager.ConnectionStrings["cn"].ConnectionString))
-            {
-                cn.Open();
-                string sql = "SELECT ISNULL(MAX(folio_orden), 0) + 1 FROM Ordenes_Servicio";
-                SqlCommand cmd = new SqlCommand(sql, cn);
-                return Convert.ToInt32(cmd.ExecuteScalar());
+            using (SqlConnection cn = new SqlConnection(ConfigurationManager.ConnectionStrings["cn"].ConnectionString)) 
+            { 
+                SqlCommand cmd = new SqlCommand("SELECT ISNULL(MAX(folioOrden),0) + 1 FROM ordenesServicio", cn); 
+                
+                cn.Open(); 
+                
+                int folio = Convert.ToInt32(cmd.ExecuteScalar()); 
+                
+                cn.Close(); 
+                
+                return folio; 
             }
         }
 
