@@ -25,6 +25,7 @@ namespace proyecto2.Backend
             {
                 cn.Open();
                 SqlCommand cmd = new SqlCommand("SELECT ISNULL(MAX(folioOrden),0) + 1 FROM ordenesServicio", cn);
+                cn.Close();
 
                 int folio = Convert.ToInt32(cmd.ExecuteScalar());
 
